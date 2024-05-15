@@ -21,7 +21,7 @@ module Ipstack
         "#{BASE_URL}/#{endpoint}?access_key=#{access_key}"
       )
 
-      is_successfull = response.fetch('status', false)
+      is_successfull = response.fetch('success', false)
 
       is_successfull ? response : raise_exception(response)
     end
