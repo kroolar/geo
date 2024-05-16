@@ -69,7 +69,7 @@ module Geolocations
       error = assert_raises(StandardError) { service.call }
 
       # Then: Error should say that Geoocation not found
-      assert_equal('Geoocation not found', error.message)
+      assert_equal('Geolocation not found', error.message)
     end
   end
 end
