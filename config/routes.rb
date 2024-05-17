@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # root "articles#index"
   namespace :v1 do
     scope format: false do
-      resources :geolocations, constraints: { id: /.+/ }, only: :destroy
+      resources :geolocations, constraints: { id: /.+/ }, only: %i[show destroy]
       post '/geolocations/:id', to: 'geolocations#create', constraints: { id: /.+/ }
     end
   end

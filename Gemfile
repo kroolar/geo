@@ -39,6 +39,7 @@ gem "bootsnap", require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem 'pry'
 end
 
 group :development do
@@ -46,4 +47,24 @@ group :development do
   # gem "spring"
 end
 
+group :test do
+  gem 'shoulda', '~> 4.0.0'
+  gem 'shoulda-matchers'
+
+  # Record your test suite's HTTP interactions and replay them during future test
+  # runs for fast, deterministic, accurate tests.
+  gem 'vcr', '~> 6.1'
+
+  gem 'webmock'
+end
+
+# All sorts of useful information about every country packaged as pretty little
+# country objects. It includes data from ISO 3166
+gem 'countries', '~> 6.0'
+
+# Makes http fun! Also, makes consuming restful web services dead easy.
 gem 'httparty', '~> 0.22.0'
+
+# Thread-aware DNS resolver library in Ruby.
+gem 'resolv', '~> 0.4.0'
+

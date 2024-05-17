@@ -2,6 +2,14 @@ module V1
   class GeolocationsController < ApplicationController
     before_action :validate_address!
 
+    def show
+      geolocation = Geolocations::Find.new(address, ipstack_lookup: true).call
+
+      render json: geolocation
+    rescue => e
+      render_internal_server_error e
+    end
+
     def destroy
       geolocation = Geolocations::Find.new(address).call
       geolocation.destroy!
