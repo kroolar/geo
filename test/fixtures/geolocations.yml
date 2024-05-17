@@ -1,1 +1,5 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+sofomo:
+  ip: 104.26.7.84
+  url: sofomo.com

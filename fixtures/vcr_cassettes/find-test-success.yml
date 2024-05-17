@@ -1,0 +1,54 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://api.ipstack.com/amazon.com?access_key=161e4ba7ff7632737e8af4855cbca56f
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Fri, 17 May 2024 20:25:31 GMT
+      X-Apilayer-Transaction-Id:
+      - e083e713-b35a-4b61-9000-df704ff12ddf
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS
+      Access-Control-Allow-Headers:
+      - "*"
+      X-Quota-Limit:
+      - '100'
+      X-Quota-Remaining:
+      - '89'
+      X-Increment-Usage:
+      - '1'
+      X-Request-Time:
+      - '0.029'
+    body:
+      encoding: UTF-8
+      string: '{"ip": "205.251.242.103", "type": "ipv4", "continent_code": "NA", "continent_name":
+        "North America", "country_code": "US", "country_name": "United States", "region_code":
+        "VA", "region_name": "Virginia", "city": "Ashburn", "zip": "20147", "latitude":
+        39.043701171875, "longitude": -77.47419738769531, "location": {"geoname_id":
+        4744870, "capital": "Washington D.C.", "languages": [{"code": "en", "name":
+        "English", "native": "English"}], "country_flag": "https://assets.ipstack.com/flags/us.svg",
+        "country_flag_emoji": "\ud83c\uddfa\ud83c\uddf8", "country_flag_emoji_unicode":
+        "U+1F1FA U+1F1F8", "calling_code": "1", "is_eu": false}}'
+  recorded_at: Fri, 17 May 2024 20:25:31 GMT
+recorded_with: VCR 6.2.0

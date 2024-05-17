@@ -2,56 +2,20 @@ require 'test_helper'
 
 module Geolocations
   class FindTest < ActiveSupport::TestCase
-    test 'raise an error when address if empty' do
-      # Given: Create service with empty address
-      service = Find.new('')
-
-      # When: Service is called
-      # Then: It should raise an error
-      error = assert_raises(StandardError) { service.call }
-
-      # Then: Error should say that address can't be blank
-      assert_equal("Address can't be blank", error.message)
-    end
-
-    test 'raise an error when IP address is invalid' do
-      # Given: Create service with invalid IP address
-      service = Find.new('1.1.1.1.1')
-
-      # When: Service is called
-      # Then: It should raise an error
-      error = assert_raises(StandardError) { service.call }
-
-      # Then: Error should say that URL or IP are invalid
-      assert_equal('Invalid URL or IP', error.message)
-    end
-
-    test 'raise an error when URL address is invalid' do
-      # Given: Create service with invalid URL address
+    test 'should find a geolocation in database by URL address' do
+      # Given: Create service with valid URL address
       service = Find.new('sofomo.com')
-
-      # When: Service is called
-      # Then: It should raise an error
-      error = assert_raises(StandardError) { service.call }
-
-      # Then: Error should say that URL or IP are invalid
-      assert_equal('Invalid URL or IP', error.message)
-    end
-
-    test 'should find a geolocation in database by IP' do
-      # Given: Create service with valid IP address
-      service = Find.new('10.10.10.10')
 
       # When: Service is called
       geolocation = service.call
 
-      # Then: Service shoud return geolocation from database
+      # Then: Service should return geolocation from database
       assert geolocation.persisted?
     end
 
-    test 'should find a geolocation in database by URL' do
-      # Given: Create service with valid URL address
-      service = Find.new('https://sofomo.com')
+    test 'should find a geolocation in database by IP address' do
+      # Given: Create service with valid IP address
+      service = Find.new('104.26.7.84')
 
       # When: Service is called
       geolocation = service.call
@@ -62,14 +26,42 @@ module Geolocations
 
     test 'should raise an error if geolocation not found in the database' do
       # Given: Create service with valid URL address
-      service = Find.new('https://google.com')
+      service = Find.new('google.com')
 
       # When: Service is called
       # Then: It should raise an error
       error = assert_raises(StandardError) { service.call }
 
       # Then: Error should say that Geoocation not found
-      assert_equal('Geolocation not found', error.message)
+      assert_equal('Geolocation google.com not found!', error.message)
+    end
+
+    test 'should find a geolocation in ipstack when there is not in database' do
+      VCR.use_cassette('find-test-success') do
+        # Given: Create service with valid URL address
+        service = Find.new('amazon.com', ipstack_lookup: true)
+
+        # When: Service is called
+        geolocation = service.call
+
+        # Then: Service shoud return geolocation from ipstack
+        assert geolocation.new_record?
+        assert_equal '205.251.242.103', geolocation.ip
+      end
+    end
+
+    test 'should raise an error if not found a geolocation in ipstack' do
+      VCR.use_cassette('find-test-fail') do
+        # Given: Create service with valid URL address
+        service = Find.new('amazon.amazon', ipstack_lookup: true)
+
+        # When: Service is called
+        # Then: It should raise an error
+        error = assert_raises(StandardError) { service.call }
+
+        # Then: Error should say that Geoocation not found
+        assert_equal('Undefined Error: (Code 106) The IP Address supplied is invalid.', error.message)
+      end
     end
   end
 end

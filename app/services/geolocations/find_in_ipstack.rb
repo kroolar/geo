@@ -16,7 +16,7 @@ module Geolocations
     end
 
     def fetch_geolocation
-      @response = Ipstack::Client.new.geolocation(network_address.ipstack_query)
+      @response = Ipstack::Client.new.geolocation(network_address.sanitize)
     end
 
     def build_attributes
