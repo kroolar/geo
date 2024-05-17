@@ -19,6 +19,24 @@ class NetworkAddressTest < ActiveSupport::TestCase
     assert_equal 'sofomo.com', network_address.domain_name
   end
 
+  test 'return valid query for ipstack when address is a URL' do
+    # Given: Serivce with valid URL address
+    network_address = NetworkAddress.new('https://sofomo.com')
+
+    # When: Use .ipstack_query method
+    # Then: Should return domain name
+    assert_equal 'sofomo.com', network_address.ipstack_query
+  end
+
+  test 'return valid query for ipstack when address is an IP' do
+    # Given: Serivce with valid IP address
+    network_address = NetworkAddress.new('10.10.10.10')
+
+    # When: Use .ipstack_query method
+    # Then: Should return domain name
+    assert_equal '10.10.10.10', network_address.ipstack_query
+  end
+
   test 'return true if provided address is valid IP address' do
     # Given: Serivce with valid IP address
     network_address = NetworkAddress.new('10.10.10.10')
@@ -89,5 +107,40 @@ class NetworkAddressTest < ActiveSupport::TestCase
     # When: Use .type method
     # Then: Should return :url
     assert_equal :url, network_address.type
+  end
+
+  test 'raise an error when address is blank' do
+    # Given: Serivce with empty address
+    network_address = NetworkAddress.new('')
+
+    # When: Use .validate! method
+    # Then: Should raise an error
+    error = assert_raises { network_address.validate! }
+
+    # Then: Error should say that address can't be blank
+    assert_equal("Address can't be blank", error.message)
+  end
+
+  test 'raise an error when address is invalid' do
+    # Given: Serivce with invalid URL
+    network_address = NetworkAddress.new('Sofomo')
+
+    # When: Use .validate! method
+    # Then: Should raise an error
+    error = assert_raises { network_address.validate! }
+
+    # Then: Error should say that URL or IP address is invalid
+    assert_equal('Invalid URL or IP', error.message)
+  end
+
+  test 'return nil when address is valid' do
+    # Given: Serivce with valid URL
+    network_address = NetworkAddress.new('https://sofomo.com')
+
+    # When: Use .validate! method
+    return_value = network_address.validate!
+
+    # Then: Should return nil
+    assert_nil return_value
   end
 end
