@@ -1,13 +1,16 @@
 module Ipstack
   class Client
-    def geolocation(ip_or_url)
-      request.get ip_or_url
+    attr_reader :request
+
+    def initialize
+      @request = Request.new
     end
 
-    private
+    def geolocation(address)
+      network_address = NetworkAddress.new(address)
+      endpoint = network_address.ip? ? address : network_address.domain_name
 
-    def request
-      @request ||= Request.new
+      request.get endpoint
     end
   end
 end
