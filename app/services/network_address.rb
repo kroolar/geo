@@ -5,17 +5,16 @@ class NetworkAddress
     @address = address
   end
 
-  def domain_name
-    return if ip?
-
-    address.gsub('http://', '').gsub('https://', '')
+  def sanitize
+    address.gsub('http://', '')
+           .gsub('http:/', '')
+           .gsub('https://', '')
+           .gsub('https:/', '')
   end
-
-  def ipstack_query = ip? ? address : domain_name
 
   def ip? = address.match?(Resolv::AddressRegex)
 
-  def url? = address.match?(URI::DEFAULT_PARSER.make_regexp(%w[http https]))
+  def url? = "https://#{address}".match?(URI::DEFAULT_PARSER.make_regexp(%w[http https]))
 
   def valid? = ip? || url?
 

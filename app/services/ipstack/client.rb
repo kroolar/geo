@@ -7,10 +7,7 @@ module Ipstack
     end
 
     def geolocation(address)
-      network_address = NetworkAddress.new(address)
-      endpoint = network_address.ip? ? address : network_address.domain_name
-
-      request.get endpoint
+      request.get address
     end
   end
 end
