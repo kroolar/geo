@@ -1,21 +1,20 @@
 module Geolocations
   class Create
-    attr_reader :geolocation, :params
+    attr_reader :address, :geolocation
 
-    def initialize(params)
-      @geolocation = Geolocation.new
-      @params = params
+    def initialize(address)
+      @address = address
     end
 
     def call
-      assign_attributes
+      fetch_geolocation
       save!
     end
 
     private
 
-    def assign_attributes
-      geolocation.assign_attributes(params)
+    def fetch_geolocation
+      @geolocation = Geolocations::FindInIpstack.new(address).call
     end
 
     def save!
@@ -25,7 +24,7 @@ module Geolocations
     def raise_exception
       error_message = geolocation.errors.full_messages.join(', ')
 
-      raise StandardError.new(error_message)
+      raise StandardError, error_message
     end
   end
 end

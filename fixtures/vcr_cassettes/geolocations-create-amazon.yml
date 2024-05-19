@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://api.ipstack.com/sofomo.sofomo?access_key=161e4ba7ff7632737e8af4855cbca56f
+    uri: http://api.ipstack.com/sofomo?access_key=161e4ba7ff7632737e8af4855cbca56f
     body:
       encoding: US-ASCII
       string: ''
@@ -23,9 +23,9 @@ http_interactions:
       Transfer-Encoding:
       - chunked
       Date:
-      - Sun, 19 May 2024 09:42:23 GMT
+      - Fri, 17 May 2024 21:08:58 GMT
       X-Apilayer-Transaction-Id:
-      - 6cbd291c-1a14-4ac1-9eec-0c4511472fad
+      - 736d8531-a9dc-400d-9e1a-c9adae501c58
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -35,14 +35,14 @@ http_interactions:
       X-Quota-Limit:
       - '100'
       X-Quota-Remaining:
-      - '81'
+      - '82'
       X-Increment-Usage:
       - '1'
       X-Request-Time:
-      - '0.043'
+      - '0.029'
     body:
       encoding: UTF-8
       string: '{"success":false,"error":{"code":106,"type":"invalid_ip_address","info":"The
         IP Address supplied is invalid."}}'
-  recorded_at: Sun, 19 May 2024 09:42:23 GMT
+  recorded_at: Fri, 17 May 2024 21:08:58 GMT
 recorded_with: VCR 6.2.0

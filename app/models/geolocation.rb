@@ -3,8 +3,7 @@ class Geolocation < ApplicationRecord
 
   validates :continent_code, inclusion: { in: CONTINENT_CODES }
   validates :country_code, inclusion: { in: ISO3166::Country.all.map(&:alpha2) }
-  validates :ip, format: { with: Resolv::AddressRegex }
+  validates :ip, format: { with: Resolv::AddressRegex }, uniqueness: true
   validates :latitude, inclusion: -90..90
   validates :longitude, inclusion: -180..180
-  validates :url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]) }
 end

@@ -4,7 +4,7 @@ module Geolocations
   class FindTest < ActiveSupport::TestCase
     test 'should find a geolocation in database by URL address' do
       # Given: Create service with valid URL address
-      service = Find.new('sofomo.com')
+      service = Find.new('facebook.com')
 
       # When: Service is called
       geolocation = service.call
@@ -15,7 +15,7 @@ module Geolocations
 
     test 'should find a geolocation in database by IP address' do
       # Given: Create service with valid IP address
-      service = Find.new('104.26.7.84')
+      service = Find.new('31.13.66.35')
 
       # When: Service is called
       geolocation = service.call

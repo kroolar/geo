@@ -1,9 +1,17 @@
 module V1
   class GeolocationsController < ApplicationController
-    before_action :validate_address!
+    before_action :sanitize_address!
+
+    def create
+      Geolocations::Create.new(@address).call
+
+      render_ok 'Geolocation successfully created!'
+    rescue => e
+      render_internal_server_error e
+    end
 
     def show
-      geolocation = Geolocations::Find.new(address, ipstack_lookup: true).call
+      geolocation = Geolocations::Find.new(@address, ipstack_lookup: true).call
 
       render json: geolocation
     rescue => e
@@ -11,7 +19,7 @@ module V1
     end
 
     def destroy
-      geolocation = Geolocations::Find.new(address).call
+      geolocation = Geolocations::Find.new(@address).call
       geolocation.destroy!
 
       render_ok 'Geolocation destroyed!'
@@ -21,16 +29,8 @@ module V1
 
     private
 
-    def address
-      @address ||= network_address.sanitize
-    end
-
-    def network_address
-      @network_address ||= NetworkAddress.new(params[:id])
-    end
-
-    def validate_address!
-      network_address.validate!
+    def sanitize_address!
+      @address = NetworkAddress.new(params[:id]).sanitize!
     rescue => e
       render_internal_server_error e
     end

@@ -1,146 +1,65 @@
 require 'test_helper'
 
 class NetworkAddressTest < ActiveSupport::TestCase
-  test 'return nil when address is an IP address' do
-    # Given: Serivce with valid IP address
-    network_address = NetworkAddress.new('10.10.10.10')
+  VALID_ADDRESSES = [
+    'sofomo.com',
+    'www.sofomo.com',
+    'http://sofomo.com',
+    'https://sofomo.com',
+    'http://www.sofomo.com',
+    'https://www.sofomo.com',
+    'so-fo-mo.com',
+    'www.so-fo-mo.com',
+    'http://so-fo-mo.com',
+    'https://so-fo-mo.com',
+    'http://www.so-fo-mo.com',
+    'https://www.so-fo-mo.com',
+    '104.26.7.84'
+  ].freeze
 
-    # When: Use domain_name method
-    # Then: Should return nil
-    assert_nil network_address.domain_name
+  INVALID_ADDRESSES = [
+    'http://',
+    'http://www',
+    'http://www.',
+    'http://www.sofomo',
+    'http://www.sofomo.sofomo',
+    'https://',
+    'https://www',
+    'https://www.',
+    'https://www.sofomo',
+    'https://www.sofomo.sofomo',
+    'www',
+    'www.',
+    'www.sofomo',
+    'www.sofomo.sofomo',
+    'sofomo',
+    '.com',
+    'com',
+    '104',
+    '104.26',
+    '104.26.7',
+    '104.26.7.84.0'
+  ].freeze
+
+  test 'should return sanitized addresses' do
+    VALID_ADDRESSES[0..5].map do |address|
+      assert_equal('sofomo.com', NetworkAddress.new(address).sanitize!)
+    end
+
+    VALID_ADDRESSES[6..11].map do |address|
+      assert_equal('so-fo-mo.com', NetworkAddress.new(address).sanitize!)
+    end
+
+    assert_equal('104.26.7.84', NetworkAddress.new(VALID_ADDRESSES.last).sanitize!)
   end
 
-  test 'return domain name when address is a URL' do
-    # Given: Serivce with valid URL address
-    network_address = NetworkAddress.new('https://sofomo.com')
+  test 'should raise an error' do
+    INVALID_ADDRESSES.each do |address|
+      assert_raises { NetworkAddress.new(address).sanitize! }
+    end
 
-    # When: Use domain_name method
-    # Then: Should return domain name
-    assert_equal 'sofomo.com', network_address.domain_name
-  end
+    error = assert_raises { NetworkAddress.new('').sanitize! }
 
-  test 'return valid query for ipstack when address is a URL' do
-    # Given: Serivce with valid URL address
-    network_address = NetworkAddress.new('https://sofomo.com')
-
-    # When: Use .ipstack_query method
-    # Then: Should return domain name
-    assert_equal 'sofomo.com', network_address.ipstack_query
-  end
-
-  test 'return valid query for ipstack when address is an IP' do
-    # Given: Serivce with valid IP address
-    network_address = NetworkAddress.new('10.10.10.10')
-
-    # When: Use .ipstack_query method
-    # Then: Should return domain name
-    assert_equal '10.10.10.10', network_address.ipstack_query
-  end
-
-  test 'return true if provided address is valid IP address' do
-    # Given: Serivce with valid IP address
-    network_address = NetworkAddress.new('10.10.10.10')
-
-    # When: Use .ip? method
-    # Then: Should return true
-    assert network_address.ip?
-  end
-
-  test 'return false if provided address is invalid IP address' do
-    # Given: Serivce with invalid IP address
-    network_address = NetworkAddress.new('10.10.10.10.10')
-
-    # When: Use .ip? method
-    # Then: Should return false
-    refute network_address.ip?
-  end
-
-  test 'return true if provided address is valid URL address' do
-    # Given: Serivce with valid URL address
-    network_address = NetworkAddress.new('https://sofomo.com')
-
-    # When: Use .url? method
-    # Then: Should return true
-    assert network_address.url?
-  end
-
-  test 'return false if provided address is invalid URL address' do
-    # Given: Serivce with invalid URL address
-    network_address = NetworkAddress.new('sofomo.com')
-
-    # When: Use .url? method
-    # Then: Should return false
-    refute network_address.url?
-  end
-
-  test 'return true if provided address is valid' do
-    # Given: Serivce with valid URL address
-    network_address = NetworkAddress.new('https://sofomo.com')
-
-    # When: Use .valid? method
-    # Then: Should return true
-    assert network_address.valid?
-  end
-
-  test 'return true if provided address is invalid' do
-    # Given: Serivce with valid URL address
-    network_address = NetworkAddress.new('sofomo.com')
-
-    # When: Use .invalid? method
-    # Then: Should return true
-    assert network_address.invalid?
-  end
-
-  test 'return :ip if provided address type is IP' do
-    # Given: Serivce with valid IP address
-    network_address = NetworkAddress.new('10.10.10.10')
-
-    # When: Use .type method
-    # Then: Should return :ip
-    assert_equal :ip, network_address.type
-  end
-
-  test 'return :url if provided address type is URL' do
-    # Given: Serivce with valid URL address
-    network_address = NetworkAddress.new('https://sofomo.com')
-
-    # When: Use .type method
-    # Then: Should return :url
-    assert_equal :url, network_address.type
-  end
-
-  test 'raise an error when address is blank' do
-    # Given: Serivce with empty address
-    network_address = NetworkAddress.new('')
-
-    # When: Use .validate! method
-    # Then: Should raise an error
-    error = assert_raises { network_address.validate! }
-
-    # Then: Error should say that address can't be blank
     assert_equal("Address can't be blank", error.message)
-  end
-
-  test 'raise an error when address is invalid' do
-    # Given: Serivce with invalid URL
-    network_address = NetworkAddress.new('Sofomo')
-
-    # When: Use .validate! method
-    # Then: Should raise an error
-    error = assert_raises { network_address.validate! }
-
-    # Then: Error should say that URL or IP address is invalid
-    assert_equal('Invalid URL or IP', error.message)
-  end
-
-  test 'return nil when address is valid' do
-    # Given: Serivce with valid URL
-    network_address = NetworkAddress.new('https://sofomo.com')
-
-    # When: Use .validate! method
-    return_value = network_address.validate!
-
-    # Then: Should return nil
-    assert_nil return_value
   end
 end

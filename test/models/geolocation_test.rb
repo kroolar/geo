@@ -3,6 +3,7 @@ require 'test_helper'
 class GeolocationTest < ActiveSupport::TestCase
   should validate_inclusion_of(:continent_code).in_array(Geolocation::CONTINENT_CODES)
   should validate_inclusion_of(:country_code).in_array(ISO3166::Country.all.map(&:alpha2))
+  should validate_uniqueness_of(:ip).ignoring_case_sensitivity
 
   test 'should validate fomrat of ip' do
     should_assert_attribute :ip, '10.10.10.10'
@@ -27,12 +28,6 @@ class GeolocationTest < ActiveSupport::TestCase
     should_assert_attribute :longitude, '100.0'
     should_refute_attribute :longitude, '999.1'
     should_refute_attribute :longitude, '-180.000000001'
-  end
-
-  test 'should validate format of url' do
-    should_assert_attribute :url, 'https://www.sofomo.com/'
-    should_assert_attribute :url, 'http://www.sofomo.com/'
-    should_refute_attribute :url, 'sofomo'
   end
 
   private

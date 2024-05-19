@@ -1,33 +1,61 @@
 class NetworkAddress
   attr_reader :address
 
+  TLD_WHITELIST = %w[com org pl io dev net ai info].freeze
+
   def initialize(address)
     @address = address
   end
 
-  def sanitize
-    address.gsub('http://', '')
-           .gsub('http:/', '')
-           .gsub('https://', '')
-           .gsub('https:/', '')
+  def sanitize!
+    raise StandardError, "Address can't be blank" if address.blank?
+
+    ip? ? address : sanitize_url!
+  end
+
+  private
+
+  def sanitize_url!
+    new_address =
+      if    address.start_with?('www.')         then address.gsub('www.', '')
+      elsif address.start_with?('https://www.') then address.gsub('https://www.', '')
+      elsif address.start_with?('https:/www.')  then address.gsub('https:/www.', '')
+      elsif address.start_with?('https://')     then address.gsub('https://', '')
+      elsif address.start_with?('https:/')      then address.gsub('https:/', '')
+      elsif address.start_with?('http://www.')  then address.gsub('http://www.', '')
+      elsif address.start_with?('http:/www.')   then address.gsub('http:/www.', '')
+      elsif address.start_with?('http://')      then address.gsub('http://', '')
+      elsif address.start_with?('http:/')       then address.gsub('http:/', '')
+      else  address
+      end
+
+    validate_address_length(new_address)
+
+    domain, tld = new_address.split('.')
+
+    validate_domain(domain)
+    validate_tld(tld)
+
+    new_address
   end
 
   def ip? = address.match?(Resolv::AddressRegex)
 
-  def url? = "https://#{address}".match?(URI::DEFAULT_PARSER.make_regexp(%w[http https]))
+  def validate_address_length(address)
+    return if address.split('.').size == 2
 
-  def valid? = ip? || url?
-
-  def invalid? = !valid?
-
-  def type
-    if    ip?  then :ip
-    elsif url? then :url
-    end
+    raise StandardError, "Address #{address} is not valid!"
   end
 
-  def validate!
-    raise StandardError, "Address can't be blank" if address.blank?
-    raise StandardError, 'Invalid URL or IP' if invalid?
+  def validate_domain(domain)
+    return if domain.match?('^[A-Za-z0-9-]+$')
+
+    raise StandardError, "Domain #{domain} is not valid!"
+  end
+
+  def validate_tld(tld)
+    return if tld.in?(TLD_WHITELIST)
+
+    raise StandardError, "Top Level Domain #{tld} is not valid!"
   end
 end

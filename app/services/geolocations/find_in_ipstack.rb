@@ -1,9 +1,9 @@
 module Geolocations
   class FindInIpstack
-    attr_reader :network_address, :geolocation, :response, :attributes
+    attr_reader :address, :geolocation, :response, :attributes
 
     def initialize(address)
-      @network_address = NetworkAddress.new(address)
+      @address = address
       @geolocation = Geolocation.new
     end
 
@@ -15,8 +15,10 @@ module Geolocations
       geolocation
     end
 
+    private
+
     def fetch_geolocation
-      @response = Ipstack::Client.new.geolocation(network_address.sanitize)
+      @response = Ipstack::Client.new.geolocation(address)
     end
 
     def build_attributes
@@ -30,13 +32,17 @@ module Geolocations
     end
 
     def assign_url_address
-      return if network_address.ip?
+      return if address_ip?
 
-      @attributes[:url] = network_address.address
+      attributes[:url] = address
     end
 
     def assign_attributes
       geolocation.assign_attributes(attributes)
+    end
+
+    def address_ip?
+      address.match?(Resolv::AddressRegex)
     end
   end
 end

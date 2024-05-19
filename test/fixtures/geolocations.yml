@@ -1,5 +1,10 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-sofomo:
-  ip: 104.26.7.84
-  url: sofomo.com
+facebook:
+  id: 1
+  url: facebook.com
+  ip: 31.13.66.35
+  continent_code: NA
+  country_code: US
+  latitude: 38.98371887207031
+  longitude: -77.38275909423828
