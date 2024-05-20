@@ -1,0 +1,24 @@
+services:
+  db:
+    image: mysql
+    container_name: geo-db
+    environment:
+      MYSQL_ROOT_PASSWORD: extremely-secure-password
+    ports:
+      - 33060:3306
+    healthcheck:
+      test: mysqladmin ping -u root -p"extremely-secure-password"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  server:
+    build: .
+    container_name: geo-server
+    volumes:
+      - ./:/app
+    network_mode: host
+    entrypoint: ./entrypoint.sh
+    depends_on:
+      db:
+        condition: service_healthy

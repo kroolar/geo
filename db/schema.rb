@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2024_05_15_051508) do
-  create_table "geolocations", force: :cascade do |t|
+  create_table "geolocations", charset: "utf8mb3", force: :cascade do |t|
     t.string "ip"
     t.string "url"
     t.string "continent_code"

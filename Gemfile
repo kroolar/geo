@@ -68,3 +68,5 @@ gem 'httparty', '~> 0.22.0'
 # Thread-aware DNS resolver library in Ruby.
 gem 'resolv', '~> 0.4.0'
 
+
+gem 'mysql2'
