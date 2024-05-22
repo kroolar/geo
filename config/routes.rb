@@ -9,4 +9,6 @@ Rails.application.routes.draw do
       post '/geolocations/:id', to: 'geolocations#create', constraints: { id: /.+/ }
     end
   end
+
+  match '*unmatched', to: 'application#not_found_method', via: :all
 end

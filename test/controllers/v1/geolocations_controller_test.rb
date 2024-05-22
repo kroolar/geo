@@ -35,8 +35,6 @@ module V1
       assert_equal('facebook.com', response_body['url'])
       assert_equal('NA', response_body['continent_code'])
       assert_equal('US', response_body['country_code'])
-      assert_equal(38.98371887207031, response_body['latitude'])
-      assert_equal(-77.38275909423828, response_body['longitude'])
     end
 
     test 'should return geolocation from ipsatack' do

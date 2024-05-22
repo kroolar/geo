@@ -1,12 +1,11 @@
 module Ipstack
   class Request
-    BASE_URL = 'https://api.ipstack.com'.freeze
+    BASE_URL = 'http://api.ipstack.com'.freeze
 
     attr_reader :access_key
 
     def initialize
-      # TODO: Generate access key and add it to credentials
-      @access_key = nil
+      @access_key = ENV['IPSTACK_ACCESS_KEY']
     end
 
     def get(endpoint)
@@ -21,12 +20,14 @@ module Ipstack
         "#{BASE_URL}/#{endpoint}?access_key=#{access_key}"
       )
 
-      is_successfull = response.fetch('success', false)
+      check_response(response)
 
-      is_successfull ? response : raise_exception(response)
+      response
     end
 
-    def raise_exception(response)
+    def check_response(response)
+      return unless response['success'] == false
+
       code = response.dig('error', 'code')
       type = response.dig('error', 'type')
       info = response.dig('error', 'info')

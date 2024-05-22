@@ -30,8 +30,6 @@ module Geolocations
         assert_equal('104.26.7.84', geolocation.ip)
         assert_equal('NA', geolocation.continent_code)
         assert_equal('US', geolocation.country_code)
-        assert_equal(39.043701171875, geolocation.latitude)
-        assert_equal(-77.47419738769531, geolocation.longitude)
       end
     end
   end

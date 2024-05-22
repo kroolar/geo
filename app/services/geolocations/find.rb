@@ -10,8 +10,6 @@ module Geolocations
     def call
       find_in_database
     rescue ActiveRecord::RecordNotFound
-      raise StandardError, "Geolocation #{address} not found!" unless ipstack_lookup
-
       find_in_ipstack
     end
 
@@ -25,6 +23,8 @@ module Geolocations
     end
 
     def find_in_ipstack
+      raise StandardError, "Geolocation #{address} not found!" unless ipstack_lookup
+
       Geolocations::FindInIpstack.new(address).call
     end
   end
